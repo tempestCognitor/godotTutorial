@@ -1,0 +1,72 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://SlapYourMammy.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Zraicis.gd" type="Script" id=2]
+[ext_resource path="res://Mouse.tscn" type="PackedScene" id=3]
+[ext_resource path="res://IncredibleLumHunt.tscn" type="PackedScene" id=4]
+[ext_resource path="res://dodge_assets/art/enemyFlyingAlt_2.png" type="Texture" id=5]
+[ext_resource path="res://dodge_assets/art/gameover.wav" type="AudioStream" id=6]
+[ext_resource path="res://dodge_assets/art/House In a Forest Loop.ogg" type="AudioStream" id=7]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 480, 0, 0, 0, 0, 0, 480, 720, 0, 0, 0, 0, 0, 720, 0, 0, 0, 0, 0, 0 )
+}
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Zraicis" type="Node2D"]
+script = ExtResource( 2 )
+Mouse = ExtResource( 3 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 480.0
+margin_bottom = 720.0
+color = Color( 0.00784314, 0.988235, 0.0705882, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SlapYourMammy" parent="." instance=ExtResource( 1 )]
+
+[node name="MouseTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="AnockTimer" type="Timer" parent="."]
+
+[node name="ZaiTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="StartPosition" type="Position2D" parent="."]
+position = Vector2( 240, 450 )
+
+[node name="MicePath" type="Path2D" parent="."]
+curve = SubResource( 1 )
+
+[node name="MouseHole" type="PathFollow2D" parent="MicePath"]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="MicePath/MouseHole"]
+visible = false
+frames = SubResource( 2 )
+
+[node name="IncredibleLumHunt" parent="." instance=ExtResource( 4 )]
+
+[node name="LumMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 7 )
+
+[node name="BumSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 6 )
+[connection signal="bumpats" from="SlapYourMammy" to="." method="bumpats_over"]
+[connection signal="timeout" from="MouseTimer" to="." method="_on_MouseTimer_timeout"]
+[connection signal="timeout" from="AnockTimer" to="." method="_on_AnockTimer_timeout"]
+[connection signal="timeout" from="ZaiTimer" to="." method="_on_ZaiTimer_timeout"]
+[connection signal="startpats" from="IncredibleLumHunt" to="." method="new_bumpats"]
